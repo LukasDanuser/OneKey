@@ -44,9 +44,9 @@ public class ScanActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
 
-        lView = (ListView) findViewById(R.id.recList);
+        lView = findViewById(R.id.recList);
 
-        recNumberTxt = (TextView) findViewById(R.id.recNumber);
+        recNumberTxt = findViewById(R.id.recNumber);
 
         nfcAdpt = NfcAdapter.getDefaultAdapter(this);
 
@@ -64,13 +64,11 @@ public class ScanActivity extends Activity {
         Intent nfcIntent = new Intent(this, getClass());
         nfcIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-        nfcPendingIntent =
-                PendingIntent.getActivity(this, 0, nfcIntent, PendingIntent.FLAG_IMMUTABLE);
+        nfcPendingIntent = PendingIntent.getActivity(this, 0, nfcIntent, PendingIntent.FLAG_IMMUTABLE);
 
         // Create an Intent Filter limited to the URI or MIME type to
         // intercept TAG scans from.
-        IntentFilter tagIntentFilter =
-                new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+        IntentFilter tagIntentFilter = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
         try {
             //tagIntentFilter.addDataScheme("http");
             // tagIntentFilter.addDataScheme("vnd.android.nfc");
@@ -122,8 +120,7 @@ public class ScanActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        nfcAdpt.enableForegroundDispatch(
-                this,
+        nfcAdpt.enableForegroundDispatch(this,
                 // Intent that will be used to package the Tag Intent.
                 nfcPendingIntent,
                 // Array of Intent Filters used to declare the Intents you
@@ -143,8 +140,7 @@ public class ScanActivity extends Activity {
 
 
     private void getTag(Intent i) {
-        if (i == null)
-            return;
+        if (i == null) return;
 
         String type = i.getType();
         String action = i.getAction();
@@ -167,16 +163,12 @@ public class ScanActivity extends Activity {
                     BaseRecord result = NDEFRecordFactory.createRecord(record);
                     if (result instanceof RDTSpRecord)
                         dataList.addAll(((RDTSpRecord) result).records);
-                    else
-                        dataList.add(result);
-
+                    else dataList.add(result);
                 }
             }
-
             NdefAdapter adpt = new NdefAdapter(dataList);
             lView.setAdapter(adpt);
         }
-
     }
 
     private void notifyUser(String message) {
@@ -211,10 +203,10 @@ public class ScanActivity extends Activity {
                 v = inf.inflate(R.layout.record_layout, null);
             }
 
-            TextView tnfTxt = (TextView) v.findViewById(R.id.tnfText);
-            TextView recContentTxT = (TextView) v.findViewById(R.id.recCont);
-            TextView typeTxt = (TextView) v.findViewById(R.id.typeTxt);
-            TextView headTxt = (TextView) v.findViewById(R.id.header);
+            TextView tnfTxt = v.findViewById(R.id.tnfText);
+            TextView recContentTxT = v.findViewById(R.id.recCont);
+            TextView typeTxt = v.findViewById(R.id.typeTxt);
+            TextView headTxt = v.findViewById(R.id.header);
 
             BaseRecord record = recordList.get(position);
             tnfTxt.setText("" + record.tnf);
