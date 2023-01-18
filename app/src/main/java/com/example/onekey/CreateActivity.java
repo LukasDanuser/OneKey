@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +31,10 @@ public class CreateActivity extends AppCompatActivity {
 
 
     public void done(View view) {
+        Intent intent = getIntent();
+        String value = intent.getStringExtra("tag");
+        TextView myTextView = findViewById(R.id.textView);
+        myTextView.setText(value);
 
     }
 
