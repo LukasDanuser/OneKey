@@ -35,6 +35,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -45,6 +46,7 @@ public class ScanActivity extends Activity {
 
     private static final DateFormat TIME_FORMAT = SimpleDateFormat.getDateTimeInstance();
     private final List<Tag> mTags = new ArrayList<>();
+    private final HashMap<String, String> tagData = new HashMap<>();
     private LinearLayout mTagContent;
     private NfcAdapter mAdapter;
     private PendingIntent mPendingIntent;
@@ -55,7 +57,7 @@ public class ScanActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tag_viewer);
-        mTagContent = (LinearLayout) findViewById(R.id.list);
+        mTagContent = findViewById(R.id.list);
         resolveIntent(getIntent());
 
         mDialog = new AlertDialog.Builder(this).setNeutralButton("Ok", null).create();
@@ -151,7 +153,7 @@ public class ScanActivity extends Activity {
                 // Unknown tag type
                 byte[] empty = new byte[0];
                 byte[] id = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
-                Tag tag = (Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+                Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
                 byte[] payload = dumpTagData(tag).getBytes();
                 NdefRecord record = new NdefRecord(NdefRecord.TNF_UNKNOWN, empty, id, payload);
                 NdefMessage msg = new NdefMessage(new NdefRecord[]{record});
@@ -246,6 +248,11 @@ public class ScanActivity extends Activity {
                 sb.append("Mifare Ultralight type: ");
                 sb.append(type);
             }
+            tagData.put("IDhex", toHex(id));
+            tagData.put("IDrevhex", toReversedHex(id));
+            tagData.put("IDdec", String.valueOf(toDec(id)));
+            tagData.put("IDrevdec", String.valueOf(toReversedDec(id)));
+            tagData.put("ID", id.toString());
         }
 
         return sb.toString();
@@ -411,8 +418,8 @@ public class ScanActivity extends Activity {
             content.addView(record.getView(this, inflater, content, i), 1 + i);
             content.addView(inflater.inflate(R.layout.tag_divider, content, false), 2 + i);
             TextView tView = (TextView) content.getChildAt(i + 1);
-            intent.putExtra("tag", tView.getText().toString());
-            //   startActivity(intent);
+            intent.putExtra("tag", tagData);
+            startActivity(intent);
         }
     }
 
